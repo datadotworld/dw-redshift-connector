@@ -1,8 +1,8 @@
 WORKING_DIR=/tmp
+STATE=state
 CATALOG_FILE=catalog.json
 CATALOG_PATH=${WORKING_DIR}/${CATALOG_FILE}
-LATEST_STATE=latest-state
-LATEST_STATE_PATH=${WORKING_DIR}/${LATEST_STATE}.json
+LATEST_STATE_PATH=${WORKING_DIR}/latest-state.json
 
 DW_CONFIG_PATH=${WORKING_DIR}/config-dw.json
 REDSHIFT_CONFIG_PATH=${WORKING_DIR}/config-redshift.json
@@ -49,8 +49,9 @@ fetch-latest-state:
 	@curl --get \
 		--header "Authorization: Bearer ${DW_TOKEN}" \
 		--header "Accept: text/csv" \
+		--output "${LATEST_STATE_PATH}" \
 		--url "${BASE_URL}/sql/${DW_DATASET_SLUG}" \
-		--data-urlencode "query=SELECT * FROM table ORDER BY date_column DESC LIMIT 1"
+		--data-urlencode "query=SELECT * FROM state ORDER BY date_column DESC LIMIT 1"
 
 push-catalog: catalog-discovery
 	@curl --request PUT \
@@ -63,7 +64,7 @@ append-state:
 	@curl --request POST \
 		--header "Authorization: Bearer ${DW_TOKEN}" \
 		--header "Content-Type: application/json" \
-		--url "${BASE_URL}/streams/${DW_DATASET_SLUG}/${LATEST_STATE}" \
+		--url "${BASE_URL}/streams/${DW_DATASET_SLUG}/${STATE}" \
 		--data-binary @${LATEST_STATE_PATH}
 	@sleep 3
 	@curl --get \
