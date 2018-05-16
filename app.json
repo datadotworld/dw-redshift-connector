@@ -24,20 +24,20 @@
       "description": "ID of the data.world dataset. Format: dataset-id"
     },
     "REDSHIFT_HOST": {
-      "description": ""
+      "description": "Endpoint of the Redshift cluster"
     },
     "REDSHIFT_PORT": {
-      "description": "",
+      "description": "Port used to access the Redshift cluster",
       "value": "5439"
     },
     "REDSHIFT_DBNAME": {
-      "description": ""
+      "description": "Database to access"
     },
     "REDSHIFT_USER": {
-      "description": ""
+      "description": "User authorized to access the Redshift cluster"
     },
     "REDSHIFT_PASSWORD": {
-      "description": ""
+      "description": "Password for the above user"
     }
   }
 }
