@@ -1,0 +1,2 @@
+tap-redshift==1.0.0b4
+target-datadotworld==1.0.0b3

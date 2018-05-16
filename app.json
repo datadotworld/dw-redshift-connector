@@ -1,0 +1,43 @@
+{
+  "name": "data.world & Redshift Connector",
+  "description": "Pulls data from a redshift database and pushes it to a data.world dataset",
+  "repository": "https://github.com/datadotworld/dw-redshift-connector",
+  "website": "https://data.world",
+  "logo": "https://github.com/datadotworld/dw-redshift-connector/raw/master/assets/ceo-sparkle.png",
+  "keywords": ["data.world", "singer", "redshift", "etl"],
+  "addons": [
+    {
+      "plan": "scheduler:standard"
+    }
+  ],
+  "scripts": {
+    "postdeploy": "make fetch-all"
+  },
+  "env": {
+    "DW_TOKEN": {
+      "description": "data.world API token from https://data.world/settings/advanced"
+    },
+    "DW_DATASET_OWNER": {
+      "description": "Owner of the data.world dataset. Could be a member or an organization"
+    },
+    "DW_DATASET_ID": {
+      "description": "ID of the data.world dataset. Format: dataset-id"
+    },
+    "REDSHIFT_HOST": {
+      "description": ""
+    },
+    "REDSHIFT_PORT": {
+      "description": "",
+      "value": "5439"
+    },
+    "REDSHIFT_DBNAME": {
+      "description": ""
+    },
+    "REDSHIFT_USER": {
+      "description": ""
+    },
+    "REDSHIFT_PASSWORD": {
+      "description": ""
+    }
+  }
+}
