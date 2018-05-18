@@ -17,16 +17,16 @@ propose changes to the current or next version of this connector.
 ### Relevant Docs
 
 [Readme for the Redshift tap](https://github.com/datadotworld/tap-redshift/blob/master/README.rst)  
-[Readme for the data.world tap](https://github.com/datadotworld/tap-datadotworld/blob/master/README.md)
+[Readme for the data.world target](https://github.com/datadotworld/target-datadotworld/blob/master/README.rst)
 
 ### Fork the Project
 
 Fork the project [on Github](https://github.com/datadotworld/dw-redshift-connector.git) and check out your copy.
 
 ```sh
-$ git clone https://github.com/[YOUR_GITHUB_NAME]/dw-mws-connector.git
-$ cd dw-mws-connector
-$ git remote add upstream https://github.com/datadotworld/dw-mws-connector.git
+$ git clone https://github.com/[YOUR_GITHUB_NAME]/dw-redshift-connector.git
+$ cd dw-redshift-connector
+$ git remote add upstream https://github.com/datadotworld/dw-redshift-connector.git
 ```
 
 ### Write Tests

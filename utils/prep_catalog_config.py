@@ -18,21 +18,35 @@
 # data.world, Inc.(http://data.world/).
 
 import argparse
+import csv
 import json
 
 parser = argparse.ArgumentParser(description='Prepares a catalog file to be used with singer targets.')
-parser.add_argument('-c', '--catalog', required=True, help='path to the catalog file')
+parser.add_argument('--catalog', required=True, help='path to the catalog file')
 
 args = parser.parse_args()
-with open(args.catalog) as f:
+with open(f'{args.catalog}.json') as f:
     catalog = json.load(f)
 
-# Activate all streams
+tables = []
 for stream in catalog['streams']:
-    for entry in stream['metadata']:
-        if not entry['breadcrumb']:
-            entry['metadata']['selected'] = True
+    schema, table = stream['table_name'].split('.')
+    valid_replication_keys = None
+    for k in stream['metadata']:
+        if not k['breadcrumb'] and 'valid-replication-keys' in k and k['valid-replication-keys']:
+            valid_replication_keys = ','.join(k['valid-replication-keys'])
+            break
 
-with open(args.catalog, 'w') as f:
-    contents = json.dumps(catalog)
-    f.write(contents)
+    tables.append({
+        'schema': schema,
+        'table': table,
+        'selected': '*',
+        'incremental_sync': '*' if valid_replication_keys else None,
+        'incremental_field': valid_replication_keys,
+    })
+
+with open(f'{args.catalog}.csv', 'w') as f:
+    c = csv.DictWriter(f, fieldnames=tables[0].keys())
+
+    c.writeheader()
+    c.writerows(tables)

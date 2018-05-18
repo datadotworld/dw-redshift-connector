@@ -1,15 +1,20 @@
-WORKING_DIR=/tmp
-STATE=state
-CATALOG_FILE=catalog.json
-CATALOG_PATH=${WORKING_DIR}/${CATALOG_FILE}
-LATEST_STATE_PATH=${WORKING_DIR}/latest-state.json
-
-DW_CONFIG_PATH=${WORKING_DIR}/config-dw.json
-REDSHIFT_CONFIG_PATH=${WORKING_DIR}/config-redshift.json
-
 BASE_URL=https://api.data.world/v0
 
+WORKING_DIR=/tmp
+
+CATALOG_FILE=catalog
+CATALOG_PATH=${WORKING_DIR}/${CATALOG_FILE}
+CATALOG_PATH_CSV=${WORKING_DIR}/${CATALOG_FILE}.csv
+CATALOG_PATH_JSON=${WORKING_DIR}/${CATALOG_FILE}.json
+
+LATEST_STATE_PATH=${WORKING_DIR}/latest-state.json
+STATE=state
+
+DW_CONFIG_FULL_PATH=${WORKING_DIR}/config-dw.json
+REDSHIFT_CONFIG_FULL_PATH=${WORKING_DIR}/config-redshift.json
+
 DW_DATASET_SLUG=${DW_DATASET_OWNER}/${DW_DATASET_ID}
+DW_DATASET_ADMIN_SLUG=${DW_DATASET_OWNER}/${DW_DATASET_ID_ADMIN}
 
 define DW_CONFIG_BODY
 {
@@ -31,19 +36,24 @@ define REDSHIFT_CONFIG_BODY
 endef
 export REDSHIFT_CONFIG_BODY
 
-prep-config-files:
-	echo "$${DW_CONFIG_BODY}" > ${DW_CONFIG_PATH}
-	echo "$${REDSHIFT_CONFIG_BODY}" > ${REDSHIFT_CONFIG_PATH}
+prep-singer-config-files:
+	echo "$${DW_CONFIG_BODY}" > ${DW_CONFIG_FULL_PATH}
+	echo "$${REDSHIFT_CONFIG_BODY}" > ${REDSHIFT_CONFIG_FULL_PATH}
 
-catalog-discovery: prep-config-files
-	tap-redshift -c ${REDSHIFT_CONFIG_PATH} -d > ${CATALOG_PATH}
-	python utils/prep_catalog.py -c ${CATALOG_PATH}
+catalog-discovery: prep-singer-config-files
+	tap-redshift --config ${REDSHIFT_CONFIG_FULL_PATH} --discovery > ${CATALOG_PATH_JSON}
 
+prep-catalog-config: catalog-discovery
+	python utils/prep_catalog_config.py --catalog ${CATALOG_PATH}
+
+# TODO pull catalog-dataset-id
 fetch-catalog:
 	@curl --get \
 		--header "Authorization: Bearer ${DW_TOKEN}" \
-		--output "${CATALOG_PATH}" \
-		--url "${BASE_URL}/file_download/${DW_DATASET_SLUG}/${CATALOG_FILE}"
+		--header "Accept: text/csv" \
+		--output "${CATALOG_PATH_CSV}" \
+		--url "${BASE_URL}/sql/${DW_DATASET_SLUG}" \
+        --data-urlencode "query=SELECT * FROM "
 
 fetch-latest-state:
 	@curl --get \
@@ -53,13 +63,14 @@ fetch-latest-state:
 		--url "${BASE_URL}/sql/${DW_DATASET_SLUG}" \
 		--data-urlencode "query=SELECT * FROM state ORDER BY date_column DESC LIMIT 1"
 
-push-catalog: catalog-discovery
+push-catalog: prep-catalog-config
 	@curl --request PUT \
 		--header "Authorization: Bearer ${DW_TOKEN}" \
 		--header "Content-Type: application/octet-stream" \
 		--url "${BASE_URL}/uploads/${DW_DATASET_SLUG}/files/${CATALOG_FILE}" \
-		--data-binary @${CATALOG_PATH}
+		--data-binary @${CATALOG_PATH_CSV}
 
+# TODO push state-dataset-id
 append-state:
 	@curl --request POST \
 		--header "Authorization: Bearer ${DW_TOKEN}" \
@@ -71,18 +82,18 @@ append-state:
 		--header "Authorization: Bearer ${DW_TOKEN}" \
 		--url "${BASE_URL}/datasets/${DW_DATASET_SLUG}/sync"
 
-full-sync: push-catalog
-	tap-redshift -c ${REDSHIFT_CONFIG_PATH} --catalog ${CATALOG_PATH} \
-		| target-datadotworld -c ${DW_CONFIG_PATH} > ${LATEST_STATE_PATH}
+full-sync:
+	tap-redshift --config ${REDSHIFT_CONFIG_FULL_PATH} --catalog ${CATALOG_PATH_JSON} \
+		| target-datadotworld --config ${DW_CONFIG_FULL_PATH}
 
-incremental-sync: fetch-catalog fetch-latest-state
-	tap-redshift -c ${REDSHIFT_CONFIG_PATH} --catalog ${CATALOG_PATH} -s ${LATEST_STATE_PATH} \
-		| target-datadotworld -c ${DW_CONFIG_PATH} > ${LATEST_STATE_PATH}
+sync:
+	tap-redshift --config ${REDSHIFT_CONFIG_FULL_PATH} --catalog ${CATALOG_PATH_JSON} --state ${LATEST_STATE_PATH} \
+		| target-datadotworld --config ${DW_CONFIG_FULL_PATH} > ${LATEST_STATE_PATH}
 
 fetch-all:
 	$(MAKE) full-sync
 	$(MAKE) append-state
 
 update:
-	$(MAKE) incremental-sync
+	$(MAKE) sync
 	$(MAKE) append-state

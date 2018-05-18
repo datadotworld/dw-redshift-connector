@@ -27,14 +27,17 @@ As an example, the following job is scheduled to run daily at 8 AM CDT:
 1. Make changes to catalog.json
 2. Change the command in scheduler (`make update`)
 
-#### Storing Tables in Multiple Datasets
+### Storing Tables in Multiple Datasets
 
 ### Config Vars
 
  * `DW_TOKEN:` Pay a visit to https://data.world/settings/advanced and copy the Read/Write token
  * `DW_DATASET_OWNER:` As an example, if the URL of your dataset were https://data.world/my-org/my-cool-dataset,
  the dataset owner would be `my-org`
- * `DW_DATASET_ID:` In the example above, the dataset id would be `my-cool-dataset`
+ * `DW_DATASET_ID:` Dataset that will hold all of the Redshift data. In the example above, the dataset id would be
+ `my-cool-dataset`.
+ * `DW_DATASET_ID_ADMIN:` Dataset that will hold the Redshift configuration files and the logs. Can be the same
+ dataset as above.
  * `REDSHIFT_HOST:` Endpoint of the Redshift cluster
  * `REDSHIFT_PORT:` Port used to access the Redshift cluster
  * `REDSHIFT_DBNAME:` Database to access
