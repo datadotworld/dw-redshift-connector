@@ -11,7 +11,7 @@
     }
   ],
   "scripts": {
-    "postdeploy": "make push-catalog"
+    "postdeploy": "make push-catalog-config"
   },
   "env": {
     "DW_TOKEN": {
