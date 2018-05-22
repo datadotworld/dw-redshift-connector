@@ -33,6 +33,12 @@ Type `make update` on the screen that pops up and press 'Run'.
 
 ![Run Console](assets/run-console.png)
 
+### Generate a New Catalog Configuration
+
+The configuration file for the catalog is only generated at first-run but it's possible to force a refresh. To do so,
+follow the instructions laid out in [Manual Run](#manual-run) but type `make push-catalog-config` instead. Please note
+that all of the tables will be deselected.
+
 ### Storing Tables in Multiple Datasets
 
 Simply deploy it multiple times and specify what tables go where by configuring the catalogs accordingly.
