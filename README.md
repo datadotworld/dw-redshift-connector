@@ -17,10 +17,20 @@
 7. Add a new job. The command to use is `make update`.
     * Note that this will fetch all of the data from your Redshift database every time. A better process would be to
     fetch only the data that has been updated since last run. Take a look at the [Incremental Updates](#incremental-updates)
-    for info on setting that up. 
+    for info on setting that up.
 
 As an example, the following job is scheduled to run daily at 8 AM CDT:
 ![Daily Job](assets/scheduler-daily-job.png)
+8. Visit the admin dataset (`DW_DATASET_ID_ADMIN`) and download the catalog configuration file. By default, all the
+tables are selected. To skip a table, simply remove the `*` from the 'selected' column.
+9. If you wish to get the data immediately, trigger a manual run as described in [Manual Run](#manual-run)
+
+### Manual Run
+
+To trigger a manual update, click on 'More' on the upper right-hand corner, and then 'Run console' (screenshot below).
+Type `make update` on the screen that pops up and press 'Run'.
+
+![Run Console](assets/run-console.png)
 
 ### Storing Tables in Multiple Datasets
 
