@@ -12,7 +12,6 @@
     to multiple datasets. Take a look at the [Storing Tables in Multiple Datasets](#storing-tables-in-multiple-datasets)
     section.
     * Take a look at the [Config Vars](#config-vars) section for more details on the individual configuration variables
-    * The initial deployment will take a couple of minutes as it's pulling all of your data
 5. Once deployment is done, click on 'Manage App' to go to the app's 'Overview' page
 6. Under 'Installed add-ons', click on 'Heroku Scheduler'
 7. Add a new job. The command to use is `make update`.
@@ -25,7 +24,13 @@ As an example, the following job is scheduled to run daily at 8 AM CDT:
 
 ### Storing Tables in Multiple Datasets
 
-* The same admin dataset can be used for all the data datasets
+Simply deploy it multiple times and specify what tables go where by configuring the catalogs accordingly.
+
+The same admin dataset can be used for all the data datasets.
+
+### Incremental Updates
+
+Not yet implemented.
 
 ### Config Vars
 
