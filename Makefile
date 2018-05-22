@@ -3,7 +3,7 @@ BASE_URL=https://api.data.world/v0
 WORKING_DIR=/tmp
 
 DW_DATASET_SLUG=${DW_DATASET_OWNER}/${DW_DATASET_ID}
-DW_DATASET_ADMIN_SLUG=${DW_DATASET_OWNER}/${DW_DATASET_ID_ADMIN}
+DW_CONFIG_DATASET_SLUG=${DW_DATASET_OWNER}/${DW_CONFIG_DATASET_ID}
 
 CATALOG_FILE=catalog-${DW_DATASET_ID}
 CATALOG_FILE_CSV=${CATALOG_FILE}.csv
@@ -48,7 +48,7 @@ fetch-catalog-config:
 	@curl --get \
 		--header "Authorization: Bearer ${DW_TOKEN}" \
 		--output "${CATALOG_PATH_CSV}" \
-		--url "${BASE_URL}/file_download/${DW_DATASET_ADMIN_SLUG}/${CATALOG_FILE_CSV}"
+		--url "${BASE_URL}/file_download/${DW_CONFIG_DATASET_SLUG}/${CATALOG_FILE_CSV}"
 
 parse-catalog-config: catalog-discovery fetch-catalog-config
 	python utils/parse_catalog_config.py --catalog ${CATALOG_PATH_JSON} --config ${CATALOG_PATH_CSV}
@@ -57,7 +57,7 @@ push-catalog-config: prep-catalog-config
 	@curl --request PUT \
 		--header "Authorization: Bearer ${DW_TOKEN}" \
 		--header "Content-Type: application/octet-stream" \
-		--url "${BASE_URL}/uploads/${DW_DATASET_ADMIN_SLUG}/files/${CATALOG_FILE_CSV}" \
+		--url "${BASE_URL}/uploads/${DW_CONFIG_DATASET_SLUG}/files/${CATALOG_FILE_CSV}" \
 		--data-binary @${CATALOG_PATH_CSV}
 
 delete-current-data: parse-catalog-config

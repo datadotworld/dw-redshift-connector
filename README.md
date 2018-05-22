@@ -5,7 +5,8 @@
 ## Getting Started
 
 1. [Create a dataset](https://data.world/create-a-dataset) on data.world to hold your Redshift data
-2. You'll also need a dataset for the configuration files and the logs. The same dataset from above can be used, though.
+2. [Create a second dataset](https://data.world/create-a-dataset) for the configuration files and the logs. The same
+dataset from above can be used, though.
 3. You will need your own [Heroku](https://www.heroku.com) account
 4. Deploy to Heroku by pressing the fancy-looking button above
     * This integration was designed to save all of the Redshift tables into one dataset, but can be configured to save
@@ -21,8 +22,8 @@
 
 As an example, the following job is scheduled to run daily at 8 AM CDT:
 ![Daily Job](assets/scheduler-daily-job.png)
-8. Visit the admin dataset (`DW_DATASET_ID_ADMIN`) and download the catalog configuration file. By default, all the
-tables are deselected. To set a table to download, simply add an `*` in the 'selected' column.  
+8. Visit the config dataset (`DW_CONFIG_DATASET_ID`) and download the catalog configuration file. By default, all the
+tables are deselected. To enable a table to import to data.world, simply add an `*` in the 'selected' column.  
 9. If you wish to get the data immediately, trigger a manual run as described in [Manual Run](#manual-run)
 
 ### Manual Run
@@ -36,11 +37,11 @@ Type `make update` on the screen that pops up and press 'Run'.
 
 Simply deploy it multiple times and specify what tables go where by configuring the catalogs accordingly.
 
-The same admin dataset can be used for all the data datasets.
+The same configuration dataset can be used for all of your data datasets.
 
 ### Incremental Updates
 
-Not yet implemented.
+Coming soon.
 
 ### Config Vars
 
@@ -49,7 +50,7 @@ Not yet implemented.
  the dataset owner would be `my-org`
  * `DW_DATASET_ID:` Dataset that will hold all of the Redshift data. In the example above, the dataset id would be
  `my-cool-dataset`.
- * `DW_DATASET_ID_ADMIN:` Dataset that will hold the Redshift configuration files and the logs. Can be the same
+ * `DW_CONFIG_DATASET_ID:` Dataset that will hold the Redshift configuration files and the logs. Can be the same
  dataset as above.
  * `REDSHIFT_HOST:` Endpoint of the Redshift cluster
  * `REDSHIFT_PORT:` Port used to access the Redshift cluster

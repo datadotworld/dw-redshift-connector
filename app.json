@@ -23,7 +23,7 @@
     "DW_DATASET_ID": {
       "description": "ID of the data.world dataset for the data. Format: dataset-id"
     },
-    "DW_DATASET_ID_ADMIN": {
+    "DW_CONFIG_DATASET_ID": {
       "description": "ID of the data.world dataset to hold the Redshift configuration file and the logs. Format: dataset-id"
     },
     "REDSHIFT_HOST": {
