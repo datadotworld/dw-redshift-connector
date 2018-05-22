@@ -35,7 +35,7 @@ for stream in catalog['streams']:
     tables.append({
         'schema': schema,
         'table_name': table_name,
-        'selected': '*',
+        'selected': '',
     })
 
 with open(f'{args.catalog}.csv', 'w') as f:

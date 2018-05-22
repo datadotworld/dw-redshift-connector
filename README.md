@@ -22,7 +22,7 @@
 As an example, the following job is scheduled to run daily at 8 AM CDT:
 ![Daily Job](assets/scheduler-daily-job.png)
 8. Visit the admin dataset (`DW_DATASET_ID_ADMIN`) and download the catalog configuration file. By default, all the
-tables are selected. To skip a table, simply remove the `*` from the 'selected' column.
+tables are deselected. To set a table to download, simply add an `*` in the 'selected' column.
 9. If you wish to get the data immediately, trigger a manual run as described in [Manual Run](#manual-run)
 
 ### Manual Run
