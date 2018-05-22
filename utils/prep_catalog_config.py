@@ -33,15 +33,16 @@ for stream in catalog['streams']:
     schema, table = stream['table_name'].split('.')
     valid_replication_keys = None
     for k in stream['metadata']:
-        if not k['breadcrumb'] and 'valid-replication-keys' in k and k['valid-replication-keys']:
-            valid_replication_keys = ','.join(k['valid-replication-keys'])
+        if not k['breadcrumb'] and 'valid-replication-keys' in k['metadata'] \
+                and k['metadata']['valid-replication-keys']:
+            valid_replication_keys = ','.join(k['metadata']['valid-replication-keys'])
             break
 
     tables.append({
         'schema': schema,
         'table': table,
         'selected': '*',
-        'incremental_sync': '*' if valid_replication_keys else None,
+        'incremental_sync': '*' if valid_replication_keys and ',' not in valid_replication_keys else None,
         'incremental_field': valid_replication_keys,
     })
 

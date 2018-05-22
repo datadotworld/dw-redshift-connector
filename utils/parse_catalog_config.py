@@ -26,16 +26,26 @@ parser.add_argument('--catalog', required=True, help='path to the catalog file')
 parser.add_argument('--config', required=True, help='path to the catalog config file')
 
 args = parser.parse_args()
-with open(f'{args.catalog}.json') as f_catalog, open(f'{args.config}.csv') as f_config:
+with open(args.catalog) as f_catalog, open(args.config) as f_config:
     catalog = json.load(f_catalog)
     config = list(csv.DictReader(f_config))
 
-# Activate selected streams
-for stream in catalog['streams']:
-    for entry in stream['metadata']:
-        if not entry['breadcrumb']:
-            entry['metadata']['selected'] = True
+new_catalog = {'streams': []}
+for table in config:
+    if table['selected'] == '*':
+        stream = [s for s in catalog['streams'] if f"{table['schema']}.{table['table']}" == s['table_name']][0]
 
-with open(f'{args.catalog}-full.json', 'w') as f:
-    contents = json.dumps(catalog)
+        for entry in stream['metadata']:
+            if not entry['breadcrumb']:
+                entry['metadata']['selected'] = True
+
+        if table['incremental_sync'] == '*':
+            stream['replication_method'] = 'INCREMENTAL'
+            stream['replication_key'] = table['incremental_field']
+
+        new_catalog['streams'].append(stream)
+
+
+with open(args.catalog, 'w') as f:
+    contents = json.dumps(new_catalog)
     f.write(contents)
