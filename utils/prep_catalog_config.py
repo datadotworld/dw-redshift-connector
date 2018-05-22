@@ -21,7 +21,7 @@ import argparse
 import csv
 import json
 
-parser = argparse.ArgumentParser(description='Prepares a catalog file to be used with singer targets.')
+parser = argparse.ArgumentParser(description='Prepares a catalog configuration file to be manually edited.')
 parser.add_argument('--catalog', required=True, help='path to the catalog file')
 
 args = parser.parse_args()
@@ -30,20 +30,12 @@ with open(f'{args.catalog}.json') as f:
 
 tables = []
 for stream in catalog['streams']:
-    schema, table = stream['table_name'].split('.')
-    valid_replication_keys = None
-    for k in stream['metadata']:
-        if not k['breadcrumb'] and 'valid-replication-keys' in k['metadata'] \
-                and k['metadata']['valid-replication-keys']:
-            valid_replication_keys = ','.join(k['metadata']['valid-replication-keys'])
-            break
+    schema, table_name = stream['table_name'].split('.')
 
     tables.append({
         'schema': schema,
-        'table': table,
+        'table_name': table_name,
         'selected': '*',
-        'incremental_sync': '*' if valid_replication_keys and ',' not in valid_replication_keys else None,
-        'incremental_field': valid_replication_keys,
     })
 
 with open(f'{args.catalog}.csv', 'w') as f:

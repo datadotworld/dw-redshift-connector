@@ -19,27 +19,26 @@
 
 import argparse
 import csv
-import json
+import requests
 
 parser = argparse.ArgumentParser(description='Prepares a catalog file to be used with Singer targets.')
-parser.add_argument('--catalog', required=True, help='path to the catalog file')
 parser.add_argument('--config', required=True, help='path to the catalog config file')
+parser.add_argument('--dataset', required=True, help='path to the catalog config file')
+parser.add_argument('--token', required=True, help='data.world api token')
 
 args = parser.parse_args()
-with open(args.catalog) as f_catalog, open(args.config) as f_config:
-    catalog = json.load(f_catalog)
+with open(args.config) as f_config:
     config = list(csv.DictReader(f_config))
 
-new_catalog = {'streams': []}
+
+def delete_file(name):
+    headers = {
+        'Authorization': f'Bearer {args.token}',
+    }
+    url = f'https://api.data.world/v0/datasets/{args.dataset}/files/{name}'
+    requests.delete(url, headers=headers)
+
+
 for table in config:
     if table['selected'] == '*':
-        stream = [s for s in catalog['streams'] if f"{table['schema']}.{table['table_name']}" == s['table_name']][0]
-        for entry in stream['metadata']:
-            if not entry['breadcrumb']:
-                entry['metadata']['selected'] = True
-        new_catalog['streams'].append(stream)
-
-
-with open(args.catalog, 'w') as f:
-    contents = json.dumps(new_catalog)
-    f.write(contents)
+        delete_file(f"{table['table_name']}.jsonl")
