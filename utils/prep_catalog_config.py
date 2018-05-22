@@ -31,7 +31,6 @@ with open(f'{args.catalog}.json') as f:
 tables = []
 for stream in catalog['streams']:
     schema, table_name = stream['table_name'].split('.')
-
     tables.append({
         'schema': schema,
         'table_name': table_name,
@@ -40,6 +39,5 @@ for stream in catalog['streams']:
 
 with open(f'{args.catalog}.csv', 'w') as f:
     c = csv.DictWriter(f, fieldnames=tables[0].keys())
-
     c.writeheader()
     c.writerows(tables)

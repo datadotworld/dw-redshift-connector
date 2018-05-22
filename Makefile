@@ -72,5 +72,5 @@ dataset-sync:
 
 update: delete-current-data
 	tap-redshift --config ${REDSHIFT_CONFIG_PATH} --catalog ${CATALOG_PATH_JSON} \
-    	| target-datadotworld --config ${DW_CONFIG_PATH}
+		| target-datadotworld --config ${DW_CONFIG_PATH}
 	$(MAKE) dataset-sync

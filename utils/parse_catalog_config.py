@@ -39,7 +39,6 @@ for table in config:
                 entry['metadata']['selected'] = True
         new_catalog['streams'].append(stream)
 
-
 with open(args.catalog, 'w') as f:
     contents = json.dumps(new_catalog)
     f.write(contents)
