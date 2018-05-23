@@ -63,6 +63,7 @@ Coming soon.
  * `REDSHIFT_DBNAME:` Database to access
  * `REDSHIFT_USER:` User authorized to access the Redshift cluster
  * `REDSHIFT_PASSWORD:` Password for the above user
+ * `REDSHIFT_START_DATE:` First date to gather data from, in UTC. Format: 2017-01-01T00:00:00Z
  
 ### Contributing
 

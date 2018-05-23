@@ -41,6 +41,10 @@
     },
     "REDSHIFT_PASSWORD": {
       "description": "Password for the above user"
+    },
+    "REDSHIFT_START_DATE": {
+      "description": "First date to gather data from, in UTC. Format: 2017-01-01T00:00:00Z",
+      "value": "2017-01-01T00:00:00Z"
     }
   }
 }

@@ -29,7 +29,8 @@ define REDSHIFT_CONFIG_BODY
   "port": "${REDSHIFT_PORT}",
   "dbname": "${REDSHIFT_DBNAME}",
   "user": "${REDSHIFT_USER}",
-  "password": "${REDSHIFT_PASSWORD}"
+  "password": "${REDSHIFT_PASSWORD}",
+  "start_date": "${REDSHIFT_START_DATE}"
 }
 endef
 export REDSHIFT_CONFIG_BODY
