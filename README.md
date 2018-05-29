@@ -7,7 +7,9 @@
 1. [Create a dataset](https://data.world/create-a-dataset) on data.world to hold your Redshift data
 2. [Create a second dataset](https://data.world/create-a-dataset) for the configuration files and the logs. The same
 dataset from above can be used, though.
-3. You will need your own [Heroku](https://www.heroku.com) account
+3. You will need your own [Heroku](https://www.heroku.com) account. The account will need to be
+[verified](https://devcenter.heroku.com/articles/account-verification), meaning that you'll need to put in your credit
+card info, although it's highly unlikely that you'll go past the bounds of the free tier.
 4. Deploy to Heroku by pressing the fancy-looking button above
     * This integration was designed to save all of the Redshift tables into one dataset, but can be configured to save
     to multiple datasets. Take a look at the [Storing Tables in Multiple Datasets](#storing-tables-in-multiple-datasets)
