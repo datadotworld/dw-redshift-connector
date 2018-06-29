@@ -45,6 +45,13 @@ catalog-discovery: prep-singer-config-files
 prep-catalog-config: catalog-discovery
 	python utils/prep_catalog_config.py --catalog ${CATALOG_PATH}
 
+push-catalog-config: prep-catalog-config
+	curl --request PUT \
+		--header "Authorization: Bearer ${DW_TOKEN}" \
+		--header "Content-Type: application/octet-stream" \
+		--url "${BASE_URL}/uploads/${DW_CONFIG_DATASET_SLUG}/files/${CATALOG_FILE_CSV}" \
+		--data-binary @${CATALOG_PATH_CSV}
+
 fetch-catalog-config:
 	@curl --get \
 		--header "Authorization: Bearer ${DW_TOKEN}" \
@@ -54,24 +61,13 @@ fetch-catalog-config:
 parse-catalog-config: catalog-discovery fetch-catalog-config
 	python utils/parse_catalog_config.py --catalog ${CATALOG_PATH_JSON} --config ${CATALOG_PATH_CSV}
 
-push-catalog-config: prep-catalog-config
-	@curl --request PUT \
-		--header "Authorization: Bearer ${DW_TOKEN}" \
-		--header "Content-Type: application/octet-stream" \
-		--url "${BASE_URL}/uploads/${DW_CONFIG_DATASET_SLUG}/files/${CATALOG_FILE_CSV}" \
-		--data-binary @${CATALOG_PATH_CSV}
-
-delete-current-data: parse-catalog-config
-	@python utils/delete_current_files.py --config ${CATALOG_PATH_CSV} \
-		--dataset ${DW_DATASET_SLUG} --token ${DW_TOKEN}
-
 dataset-sync:
 	@sleep 3
 	@curl --get \
 		--header "Authorization: Bearer ${DW_TOKEN}" \
 		--url "${BASE_URL}/datasets/${DW_DATASET_SLUG}/sync"
 
-update: delete-current-data
+update: parse-catalog-config
 	tap-redshift --config ${REDSHIFT_CONFIG_PATH} --catalog ${CATALOG_PATH_JSON} \
 		| target-datadotworld --config ${DW_CONFIG_PATH}
 	$(MAKE) dataset-sync
