@@ -62,7 +62,7 @@ parse-catalog-config: catalog-discovery fetch-catalog-config
 	python utils/parse_catalog_config.py --catalog ${CATALOG_PATH_JSON} --config ${CATALOG_PATH_CSV}
 
 dataset-sync:
-	@sleep 3
+	@sleep 30
 	@curl --get \
 		--header "Authorization: Bearer ${DW_TOKEN}" \
 		--url "${BASE_URL}/datasets/${DW_DATASET_SLUG}/sync"
