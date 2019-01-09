@@ -1,3 +1,7 @@
+## Deprecation Note
+
+This project has been deprecated in favor of connecting to a database directly through JDBC. Please see [here](https://data.world/integrations/redshift) for further details.
+
 # data.world & Redshift Connector
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/datadotworld/dw-redshift-connector)
